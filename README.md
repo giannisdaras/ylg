@@ -15,11 +15,16 @@
 *Generated gif from interpolating latent variables for maltese dogs.*
 
 
-You can play directly with the model in [this Collab Notebook](https://colab.research.google.com/drive/10MO4dVoQIhS1ZpeplWTnA4KVqkvqN4Jd).
 
 
 
-## Installation
+## Explore our model
+
+Probably the easiest way to explore our model is to play directly with it in [this Collab Notebook](https://colab.research.google.com/drive/10MO4dVoQIhS1ZpeplWTnA4KVqkvqN4Jd).
+
+However, trying it locally should be easy, following the instructions bellow.
+
+### Installation
 We recommend installing YLG using an Anaconda virtual environment.
 For installing Anaconda refer to the [official docs](https://docs.anaconda.com/anaconda/install/).
 
@@ -39,10 +44,6 @@ We make available pre-trained model for YLG SAGAN, after 1M steps training on Im
 
 If you want to try the model, download it from [here](https://drive.google.com/open?id=1Nikmw2WLcSnN_Yv0FbvwrZcjgu-HPkJH).
 We recommend saving the pre-trained model under the `ylg/` folder, but you can also choose another location and set the `pretrained_path` appropriately.
-
-
-
-## Explore our model
 
 ### Generate images
 Generating images for any category of the ImageNet dataset is one command away.
