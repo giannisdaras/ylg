@@ -10,7 +10,7 @@ from categories import indx2category
 
 
 flags.DEFINE_integer('bs', 8, 'Batch size for image generation.')
-flags.DEFINE_string('category', 'eskimo_husky', 'Category of generated images.'
+flags.DEFINE_string('category', 'valley', 'Category of generated images.'
                     'See file: categories.py for all available categories.')
 flags.DEFINE_integer('seed', 10, 'Seed for numpy.')
 flags.DEFINE_integer('num_bs', 10, 'Total number of generated batches.')

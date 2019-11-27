@@ -42,7 +42,7 @@ We recommend saving the pre-trained model under the `ylg/` folder, but you can a
 ### Generate images
 Generating images for any category of the ImageNet dataset is one command away.
 
-Just run: `python generate_images.py --category=eskimo_husky` to generate eskimo huskies! For a complete list of the categories names, please check `categories.py` file.
+Just run: `python generate_images.py --category=valley` to generate valleys! For a complete list of the categories names, please check `categories.py` file.
 
 There are several parameters that you can control, such as the number of generated images. You can discover them by running: `python generate_images.py --help`
 
