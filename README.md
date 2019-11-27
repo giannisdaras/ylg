@@ -14,6 +14,11 @@
 
 *Generated gif from interpolating latent variables for maltese dogs.*
 
+
+You can play directly with the model in [this Collab Notebook](https://colab.research.google.com/drive/10MO4dVoQIhS1ZpeplWTnA4KVqkvqN4Jd).
+
+
+
 ## Installation
 We recommend installing YLG using an Anaconda virtual environment.
 For installing Anaconda refer to the [official docs](https://docs.anaconda.com/anaconda/install/).
