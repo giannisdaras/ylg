@@ -1,3 +1,4 @@
+# ImageNet categories, modified from: https://gist.github.com/yrevar/942d3a0ac09ec9e5eb3a
 indx2category = {0: 'tench, Tinca tinca',
  1: 'goldfish',
  2: 'great white shark, white shark, man-eater, man-eating shark, Carcharodon carcharias',
