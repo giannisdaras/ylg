@@ -20,8 +20,8 @@ Next, install the project requirements:
 ### Pre-trained models
 We make available pre-trained model for YLG SAGAN, after 1M steps training on ImageNet.
 
-If you want to try the model, download it from [here](https://drive.google.com/open?id=1YuN-88QeQXgRLOvV8o-KER7nbpLPmESw). We recommend saving the pre-trained model under the `ylg/` folder, but we can also choose another location and set the `pretrained_path` of each script you want to run appropriately.
-
+If you want to try the model, download it from [here](https://drive.google.com/open?id=1Nikmw2WLcSnN_Yv0FbvwrZcjgu-HPkJH).
+We recommend saving the pre-trained model under the `ylg/` folder, but you can also choose another location and set the `pretrained_path` appropriately.
 
 
 
