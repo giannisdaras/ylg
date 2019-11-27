@@ -9,6 +9,11 @@
 
 ![Teaser_inversion](./inversions/inverted.jpg)
 *Left: Real image, Right: Inverted image using our technique.*
+
+![gif_teaser](maltese.gif)
+
+*Generated gif from interpolating latent variables for maltese dogs.*
+
 ## Installation
 We recommend installing YLG using an Anaconda virtual environment.
 For installing Anaconda refer to the [official docs](https://docs.anaconda.com/anaconda/install/).
@@ -27,8 +32,8 @@ Next, install the project requirements:
 ### Pre-trained models
 We make available pre-trained model for YLG SAGAN, after 1M steps training on ImageNet.
 
-If you want to try the model, download it from [here](https://drive.google.com/open?id=1Nikmw2WLcSnN_Yv0FbvwrZcjgu-HPkJH).
-We recommend saving the pre-trained model under the `ylg/` folder, but you can also choose another location and set the `pretrained_path` appropriately.
+If you want to try the model, download it from [here](https://drive.google.com/open?id=1YuN-88QeQXgRLOvV8o-KER7nbpLPmESw). We recommend saving the pre-trained model under the `ylg/` folder, but we can also choose another location and set the `pretrained_path` of each script you want to run appropriately.
+
 
 
 
