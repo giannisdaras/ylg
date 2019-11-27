@@ -183,3 +183,31 @@ class SparseMask:
         tensor = np.zeros([nO, nI], dtype=np.float32)
         tensor[indices[:, 0].astype(int), indices[:, 1].astype(int)] = 1
         return tensor
+
+
+
+
+
+class MasksCollection:
+    def __init__(self, masks, mode='interleave'):
+        self.masks = masks
+        self.mode = mode
+        self.merged_head = None
+        self.cycled_masks = cycle(self.masks)
+
+    def __call__(self):
+        with tf.init_scope():
+            if self.mode == 'interleave':
+                return next(self.cycled_masks)
+            elif self.mode == 'merged_head':
+                # avoid re-computation
+                if self.merged_head is None:
+                    nL = self.masks[0].shape[0]
+                    self.merged_head = tf.ones((nL, nL), dtype=tf.int32)
+                    for mask in self.masks:
+                        self.merged_head = self.merged_head * mask
+                return self.merged_head
+            elif self.mode == 'heads':
+                return np.array(self.masks)
+            else:
+                raise ValueError('Not supported attention mode')
