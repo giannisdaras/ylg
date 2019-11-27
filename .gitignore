@@ -102,3 +102,8 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# pretrained models
+ylg/model.ckpt-900000.data-00000-of-00001
+ylg/model.ckpt-900000.index
+ylg/checkpoint
