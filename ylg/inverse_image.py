@@ -116,7 +116,7 @@ def main(_):
     indx = category2indx[name]
 
     np.random.seed(flags.FLAGS.seed)
-    tf.random.set_seed(flags.FLAGS.seed)
+    tf.compat.v2.random.set_seed(flags.FLAGS.seed)
     latent = np.random.normal(size=(flags.FLAGS.bs, 128)).astype(np.float32)
 
     target = tf.fill([flags.FLAGS.bs], indx)
