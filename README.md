@@ -15,6 +15,14 @@
 *Generated gif from interpolating latent variables for maltese dogs.*
 
 
+This repository hosts the official Tensorflow implementation of the paper "Your Local GAN: Designing Two Dimensional Local Attention Mechanisms for Generative Models".
+
+Abstract:
+> We introduce a new local sparse attention layer that preserves two-dimensional geometry and locality. We show that by just replacing the dense attention layer of SAGAN with our construction, we obtain very significant FID, Inception score and pure visual improvements. FID score is improved from 18.65 to **15.94** on ImageNet, keeping all other parameters the same. The sparse attention patterns that we propose for our new layer are designed using a novel information theoretic criterion that uses information flow graphs. 
+We also present a novel way to invert Generative Adversarial Networks with attention. Our method extracts from the attention layer of the discriminator a saliency map, which we use to construct a new loss function for the inversion. This allows us to visualize the newly introduced attention heads and show that they indeed capture interesting aspects of two-dimensional geometry of real images.
+
+You can read the full paper [here]().
+
 
 
 
@@ -63,6 +71,10 @@ To the best of our knowledge, inversion of big models with attention is achieved
 You are one command away of trying it out!
 
 Just run: `python inverse_image.py` to invert a cute maltese dog that is saved in the `real_images/` folder. You can run with your own images as well! `python inverse_image.py --image_path=<path> --category=<path>` is the command to run.
+
+
+### Train from scratch
+You can use the `train_experiment_main.py` script for training YLG from scratch. Please refer to the [instructions](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/examples/self_attention_estimator) of the tensorflow-gan library for setting up your training environment (host VM, TPUs/GPUs, bucket, etc) and feel free to open us an issue if you encounter any problem, so we can look on it.
 
 
 ## Acknowledgments
