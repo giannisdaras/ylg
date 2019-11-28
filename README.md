@@ -66,4 +66,9 @@ Just run: `python inverse_image.py` to invert a cute maltese dog that is saved i
 
 
 ## Acknowledgments
-The code of this repository is heavily based in the [tensorflow-gan](https://github.com/tensorflow/gan) library. We add the library as a dependency and we only re-write based on the original code the parts that need to be modified for YLG.
+
+We would like to wholeheartedly thank the **TensorFlow Research Cloud  (TFRC)** program that gave us access to v3-8 Cloud TPUs and GCP credits to train our models on ImageNet. 
+
+The code of this repository is heavily based in the [tensorflow-gan](https://github.com/tensorflow/gan) library. We add the library as a dependency and we only re-implement parts that need modification for YLG. Every file which is modified from tensorflow-gan has a header indicating that it is subject to the license of the tensorflow-gan library.
+
+
