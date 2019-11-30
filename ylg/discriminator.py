@@ -98,8 +98,11 @@ def discriminator(image, labels, df_dim, number_classes, act=tf.nn.relu):
             'discriminator', reuse=tf.compat.v1.AUTO_REUSE) as dis_scope:
         h0 = optimized_block(
             image, df_dim, 'd_optimized_block1', act=act)  # 64 * 64
-        h1_ = block(h0, df_dim * 2, 'd_block2', act=act)  # 32 * 32
-        h1, attn_map = ops.sn_attention_block_sim(h1_, name='d_ops')  # 32 * 32
+        h1 = block(h0, df_dim * 2, 'd_block2', act=act)  # 32 * 32
+        if not flags.FLAGS.ylg:
+            h1 = ops.sn_non_local_block_sim(h1, name='d_ops')  # 32 * 32
+        else:
+            h1 = ops.sn_attention_block_sim(h1, name='d_ops')  # 32 * 32
         h2 = block(h1, df_dim * 4, 'd_block3', act=act)  # 16 * 16
         h3 = block(h2, df_dim * 8, 'd_block4', act=act)  # 8 * 8
         h4 = block(h3, df_dim * 16, 'd_block5', act=act)  # 4 * 4
@@ -113,4 +116,4 @@ def discriminator(image, labels, df_dim, number_classes, act=tf.nn.relu):
                                 h_labels, axis=1, keepdims=True)
     var_list = tf.compat.v1.get_collection(
         tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, dis_scope.name)
-    return output, h1_, attn_map, var_list
+    return output, var_list

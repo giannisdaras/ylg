@@ -1,6 +1,5 @@
 """
         Definitions of generator functions.
-
 Code in a slightly modified version of the SAGAN generator of the
 tensorlow-gan library. We change only the part of the code which refers to
 the attention layer. We do not claim any ownership on this code and you should
@@ -34,6 +33,7 @@ def make_z_normal(num_batches, batch_size, z_dim):
 def make_class_labels(batch_size, num_classes):
     """Generate class labels for generation."""
     # Uniform distribution.
+    # TODO(augustusodena) Use true distribution of ImageNet classses.
     gen_class_logits = tf.zeros((batch_size, num_classes))
     gen_class_ints = tf.random.categorical(
         logits=gen_class_logits, num_samples=1)
@@ -93,8 +93,7 @@ def block(x, labels, out_channels, num_classes, name, training=True):
         return x_0 + x
 
 
-def generator(zs, target_class, gf_dim, num_classes, training=True,
-              mode='both'):
+def generator(zs, target_class, gf_dim, num_classes, training=True):
     """Builds the generator segment of the graph, going from z -> G(z).
 
     Args:
@@ -111,9 +110,12 @@ def generator(zs, target_class, gf_dim, num_classes, training=True,
     """
     with tf.compat.v1.variable_scope(
             'generator', reuse=tf.compat.v1.AUTO_REUSE) as gen_scope:
+
         act0 = ops.snlinear(
             zs, gf_dim * 16 * 4 * 4, training=training, name='g_snh0')
         act0 = tf.reshape(act0, [-1, 4, 4, gf_dim * 16])
+
+        # pylint: disable=line-too-long
         act1 = block(
             act0,
             target_class,
@@ -135,7 +137,11 @@ def generator(zs, target_class, gf_dim, num_classes, training=True,
             num_classes,
             'g_block3',
             training)  # 32
-        act3, attn_map = ops.sn_attention_block_sim(act3, training, name='g_ops')  # 32
+        if not flags.FLAGS.ylg:
+            act3 = ops.sn_non_local_block_sim(act3, training, name='g_ops',
+                                              nH=flags.FLAGS.nH)  # 32
+        else:
+            act3 = ops.sn_attention_block_sim(act3, training, name='g_ops')  # 32
         act4 = block(
             act3,
             target_class,
@@ -158,4 +164,6 @@ def generator(zs, target_class, gf_dim, num_classes, training=True,
                 name='g_bn'))
         act6 = ops.snconv2d(act5, 3, 3, 3, 1, 1, training, 'g_snconv_last')
         out = tf.nn.tanh(act6)
-    return out, attn_map
+    var_list = tf.compat.v1.get_collection(
+        tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, gen_scope.name)
+    return out, var_list
