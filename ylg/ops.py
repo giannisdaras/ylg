@@ -339,7 +339,7 @@ def sn_attention_block_sim(x, training=True, name='sn_nonlocal'):
         sigma = tf.compat.v1.get_variable(
             'sigma_ratio', [], initializer=tf.compat.v1.initializers.constant(0.0))
         attn_g = sn_conv1x1(attn_g, num_channels, training, 'sn_conv_attn')
-        return x + sigma * attn_g, attn
+        return x + sigma * attn_g
 
 
 def sn_non_local_block_sim(x, training=True, name='sn_nonlocal',
