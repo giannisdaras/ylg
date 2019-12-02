@@ -1,8 +1,13 @@
 from collections import defaultdict
+from hilbertcurve.hilbertcurve import HilbertCurve
 
 
 class SpaceFillingCurve:
     def enumerate_cells(*args, **kwargs):
+        '''
+            Abstract method that takes (rows, cols) as input and returns
+            a dict that maps 1d numbers to 2d locations.
+        '''
         raise NotImplementedError()
 
 
@@ -26,4 +31,13 @@ class Manhattan(SpaceFillingCurve):
             cells = distances[distance]
             for cell in cells:
                 enumeration[numbers.pop(0)] = cell
+        return enumeration
+
+
+class Hilbert(SparseFillingCurve):
+    def enumerate_cells(self, rows, cols):
+        enumeration = {}
+        curve = HilbertCurve(rows, 2)
+        for i in range(rows * cols):
+            enumeration[i] = curve.coordinates_from_distance(i)
         return enumeration
