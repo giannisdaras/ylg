@@ -2,7 +2,6 @@ import numpy as np
 import random
 import math
 import tensorflow as tf
-from collections import defaultdict
 from itertools import cycle
 from space_filling_curves import Manhattan
 

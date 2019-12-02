@@ -1,10 +1,13 @@
+from collections import defaultdict
+
+
 class SpaceFillingCurve:
     def enumerate_cells(*args, **kwargs):
         raise NotImplementedError()
 
 
 class Manhattan(SpaceFillingCurve):
-    def enumerate_cells(rows, cols):
+    def enumerate_cells(self, rows, cols):
         # maps distances to cells
         distances = defaultdict(list)
 
