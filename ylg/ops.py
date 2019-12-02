@@ -232,7 +232,7 @@ def sn_conv1x1(x, output_dim, training=True, name='sn_conv1x1'):
         return conv
 
 
-def get_grid_masks(gridO, gridI):
+def get_grid_masks(gridO, gridI, filling_curve='manhattan'):
     '''
         We organize the masks as following:
             - mask1: RTL
@@ -250,18 +250,18 @@ def get_grid_masks(gridO, gridI):
     masks = []
 
     # RTL
-    masks.append(sparse.RightFloorMask.get_grid_mask_from_1d(gridI, nO=gridO))
-    masks.append(sparse.RightRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO))
+    masks.append(sparse.RightFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
+    masks.append(sparse.RightRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
 
-    masks.append(sparse.RightFloorMask.get_grid_mask_from_1d(gridI, nO=gridO))
-    masks.append(sparse.RightRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO))
+    masks.append(sparse.RightFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
+    masks.append(sparse.RightRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
 
     # LTR
-    masks.append(sparse.LeftFloorMask.get_grid_mask_from_1d(gridI, nO=gridO))
-    masks.append(sparse.LeftRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO))
+    masks.append(sparse.LeftFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
+    masks.append(sparse.LeftRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
 
-    masks.append(sparse.LeftFloorMask.get_grid_mask_from_1d(gridI, nO=gridO))
-    masks.append(sparse.LeftRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO))
+    masks.append(sparse.LeftFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
+    masks.append(sparse.LeftRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
 
     return np.array(masks)
 
