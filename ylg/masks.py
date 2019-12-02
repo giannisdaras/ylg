@@ -3,7 +3,7 @@ import random
 import math
 import tensorflow as tf
 from itertools import cycle
-from space_filling_curves import Manhattan
+from space_filling_curves import Manhattan, Hilbert
 
 def allow_non_square(fn):
     '''
@@ -116,6 +116,8 @@ class SparseMask:
     def get_square_grid_indices_from_1d(self, grid, filling_curve='manhattan'):
         if filling_curve == 'manhattan':
             curve = Manhattan()
+        else:
+            curve = Hilbert()
         rows, cols = grid
         enumeration = curve.enumerate_cells(rows, cols)
         mask_indices = self.get_indices(grid[0] * grid[1])

@@ -34,7 +34,7 @@ class Manhattan(SpaceFillingCurve):
         return enumeration
 
 
-class Hilbert(SparseFillingCurve):
+class Hilbert(SpaceFillingCurve):
     def enumerate_cells(self, rows, cols):
         enumeration = {}
         curve = HilbertCurve(rows, 2)
