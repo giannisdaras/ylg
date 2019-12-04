@@ -17,6 +17,7 @@ import tensorflow as tf
 
 import eval_lib
 import tensorflow_gan as tfgan  # tf
+from tensorflow_gan.python import namedtuples as tfgan_tuples
 
 
 def get_tpu_run_config_from_hparams(hparams):
@@ -72,6 +73,7 @@ def get_tpu_estimator(generator, discriminator, hparams, config):
         predict_batch_size=hparams.predict_batch_size,
         use_tpu=hparams.debug_params.use_tpu,
         config=config,
+        gan_train_steps=tfgan_tuples.GANTrainSteps(2, 1),
         params=hparams._asdict())
 
 
@@ -107,6 +109,7 @@ def get_gpu_estimator(generator, discriminator, hparams, config):
             hparams.discriminator_lr, hparams.beta1),
         get_eval_metric_ops_fn=gpu_get_metric,
         config=config,
+        gan_train_steps=tfgan_tuples.GANTrainSteps(2, 1),
         params=hparams._asdict())
 
 
