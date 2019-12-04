@@ -22,7 +22,7 @@ flags.DEFINE_string('model_dir', '/tmp/tfgan_logdir/sagan-estimator',
 
 # ML Hparams.
 flags.DEFINE_integer(
-    'train_batch_size', 32,
+    'train_batch_size', 8192,
     'The number of images in each train batch. From go/tpu-pitfalls: "The '
     'batch size of any model should always be at least 64 (8 per TPU core), '
     'since the TPU always pads the tensors to this size. The ideal batch size '
@@ -30,10 +30,10 @@ flags.DEFINE_integer(
     'eliminates inefficiencies related to memory transfer and padding."')
 flags.DEFINE_integer('z_dim', 128,
                      'Dimensions of the generator noise vector.')
-flags.DEFINE_integer('gf_dim', 64, 'Dimensionality of gf. [64]')
-flags.DEFINE_integer('df_dim', 64, 'Dimensionality of df. [64]')
-flags.DEFINE_float('generator_lr', 0.0001, 'The generator learning rate.')
-flags.DEFINE_float('discriminator_lr', 0.0004,
+flags.DEFINE_integer('gf_dim', 96, 'Dimensionality of gf. [64]')
+flags.DEFINE_integer('df_dim', 96, 'Dimensionality of df. [64]')
+flags.DEFINE_float('generator_lr', 0.00005, 'The generator learning rate.')
+flags.DEFINE_float('discriminator_lr', 0.0002,
                    'The discriminator learning rate.')
 flags.DEFINE_float('beta1', 0.0, 'Momentum term of adam. [0.0]')
 flags.DEFINE_integer('num_classes', 2, 'Number of classes of the dataset.')
@@ -52,14 +52,14 @@ flags.DEFINE_integer(
     'train_steps_per_eval', 1000,
     'Number of train steps before writing some sample images.')
 flags.DEFINE_integer('num_eval_steps', 32, 'The number of evaluation steps.')
-flags.DEFINE_integer('eval_batch_size', 32,
+flags.DEFINE_integer('eval_batch_size', 1024,
                      'The number of images in each eval batch.')
-flags.DEFINE_integer('predict_batch_size', 80,
+flags.DEFINE_integer('predict_batch_size', 128,
                      'The number of images in each predict batch.')
 
 # Debugging.
-flags.DEFINE_bool('use_tpu', False, 'Whether to use TPU or CPU.')
-flags.DEFINE_bool('eval_on_tpu', False, 'Whether eval is run on TPU.')
+flags.DEFINE_bool('use_tpu', True, 'Whether to use TPU or CPU.')
+flags.DEFINE_bool('eval_on_tpu', True, 'Whether eval is run on TPU.')
 flags.DEFINE_integer(
     'continuous_eval_timeout_secs', None,
     'None, or number of seconds to wait for a checkpoint '
@@ -67,7 +67,7 @@ flags.DEFINE_integer(
 
 # TPU params.
 flags.DEFINE_bool(
-    'use_tpu_estimator', False,
+    'use_tpu_estimator', True,
     'Whether to use TPUGANEstimator or GANEstimator. This is useful if, for '
     'instance, we want to run the eval job on GPU.')
 flags.DEFINE_string('tpu', None, 'A string corresponding to the TPU to use.')
