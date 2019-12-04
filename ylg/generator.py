@@ -11,8 +11,8 @@ import tensorflow_gan as tfgan
 import ops
 import attention
 
-flags.DEFINE_boolean('type', 'ylg', ['dense', 'ylg', 'topological'],
-                     'Type of model attention')
+flags.DEFINE_enum('type', 'ylg', ['dense', 'ylg', 'topological'],
+                    'Type of model attention')
 flags.DEFINE_integer('nH', 4, 'Number of attention heads to use with SAGAN')
 
 
