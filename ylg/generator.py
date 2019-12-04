@@ -12,7 +12,7 @@ import ops
 
 flags.DEFINE_boolean('ylg', True,
                      'Whether to use Your Local Gan variation')
-flags.DEFINE_integer('nH', None, 'Number of attention heads to use with SAGAN')
+flags.DEFINE_integer('nH', 4, 'Number of attention heads to use with SAGAN')
 
 
 def make_z_normal(num_batches, batch_size, z_dim):
@@ -122,48 +122,49 @@ def generator(zs, target_class, gf_dim, num_classes, training=True):
             gf_dim * 16,
             num_classes,
             'g_block1',
-            training)  # 8
+            training)
         act2 = block(
             act1,
             target_class,
             gf_dim * 8,
             num_classes,
             'g_block2',
-            training)  # 16
+            training)
         act3 = block(
             act2,
             target_class,
             gf_dim * 4,
             num_classes,
             'g_block3',
-            training)  # 32
-        if not flags.FLAGS.ylg:
-            act3 = ops.sn_non_local_block_sim(act3, training, name='g_ops',
-                                              nH=flags.FLAGS.nH)  # 32
-        else:
-            act3 = ops.sn_attention_block_sim(act3, training, name='g_ops')  # 32
+            training)
         act4 = block(
             act3,
             target_class,
             gf_dim * 2,
             num_classes,
             'g_block4',
-            training)  # 64
-        act5 = block(
-            act4,
+            training)
+        if not flags.FLAGS.ylg:
+            act5 = ops.sn_non_local_block_sim(act4, training, name='g_ops',
+                                              nH=flags.FLAGS.nH)
+        else:
+            act5 = ops.sn_attention_block_sim(act4, training, name='g_ops',
+                                              nH=flags.FLAGS.nH)
+        act6 = block(
+            act5,
             target_class,
             gf_dim,
             num_classes,
             'g_block5',
-            training)  # 128
-        act5 = tf.nn.relu(
+            training)
+        act7 = tf.nn.relu(
             tfgan.tpu.batch_norm(
-                act5,
+                act6,
                 training,
                 conditional_class_labels=None,
                 name='g_bn'))
-        act6 = ops.snconv2d(act5, 3, 3, 3, 1, 1, training, 'g_snconv_last')
-        out = tf.nn.tanh(act6)
+        act8 = ops.snconv2d(act7, 3, 3, 3, 1, 1, training, 'g_snconv_last')
+        out = tf.nn.tanh(act8)
     var_list = tf.compat.v1.get_collection(
         tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, gen_scope.name)
     return out, var_list

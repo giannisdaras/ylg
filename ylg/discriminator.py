@@ -97,22 +97,22 @@ def discriminator(image, labels, df_dim, number_classes, act=tf.nn.relu):
     with tf.compat.v1.variable_scope(
             'discriminator', reuse=tf.compat.v1.AUTO_REUSE) as dis_scope:
         h0 = optimized_block(
-            image, df_dim, 'd_optimized_block1', act=act)  # 64 * 64
-        h1 = block(h0, df_dim * 2, 'd_block2', act=act)  # 32 * 32
+            image, df_dim, 'd_optimized_block1', act=act)
         if not flags.FLAGS.ylg:
-            h1 = ops.sn_non_local_block_sim(h1, name='d_ops')  # 32 * 32
+            h1 = ops.sn_non_local_block_sim(h0, name='d_ops', nH=flags.FLAGS.nH)
         else:
-            h1 = ops.sn_attention_block_sim(h1, name='d_ops')  # 32 * 32
-        h2 = block(h1, df_dim * 4, 'd_block3', act=act)  # 16 * 16
-        h3 = block(h2, df_dim * 8, 'd_block4', act=act)  # 8 * 8
-        h4 = block(h3, df_dim * 16, 'd_block5', act=act)  # 4 * 4
-        h5 = block(h4, df_dim * 16, 'd_block6', downsample=False, act=act)
-        h5_act = act(h5)
-        h6 = tf.reduce_sum(input_tensor=h5_act, axis=[1, 2])
-        output = ops.snlinear(h6, 1, name='d_sn_linear')
+            h1 = ops.sn_attention_block_sim(h0, name='d_ops', nH=flags.FLAGS.nH)
+        h2 = block(h1, df_dim * 2, 'd_block2', act=act)
+        h3 = block(h2, df_dim * 4, 'd_block3', act=act)
+        h4 = block(h3, df_dim * 8, 'd_block4', act=act)
+        h5 = block(h4, df_dim * 16, 'd_block5', act=act)
+        h6 = block(h5, df_dim * 16, 'd_block6', downsample=False, act=act)
+        h6_act = act(h6)
+        h7 = tf.reduce_sum(input_tensor=h6_act, axis=[1, 2])
+        output = ops.snlinear(h7, 1, name='d_sn_linear')
         h_labels = ops.sn_embedding(labels, number_classes, df_dim * 16,
                                     name='d_embedding')
-        output += tf.reduce_sum(input_tensor=h6 *
+        output += tf.reduce_sum(input_tensor=h7 *
                                 h_labels, axis=1, keepdims=True)
     var_list = tf.compat.v1.get_collection(
         tf.compat.v1.GraphKeys.TRAINABLE_VARIABLES, dis_scope.name)
