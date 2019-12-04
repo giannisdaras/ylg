@@ -253,20 +253,15 @@ def get_grid_masks(gridO, gridI, filling_curve='manhattan'):
     masks.append(sparse.RightFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
     masks.append(sparse.RightRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
 
-    masks.append(sparse.RightFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
-    masks.append(sparse.RightRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
 
     # LTR
-    masks.append(sparse.LeftFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
-    masks.append(sparse.LeftRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
-
     masks.append(sparse.LeftFloorMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
     masks.append(sparse.LeftRepetitiveMask.get_grid_mask_from_1d(gridI, nO=gridO, filling_curve=filling_curve))
 
     return np.array(masks)
 
 
-def sn_attention_block_sim(x, training=True, name='sn_nonlocal'):
+def sn_attention_block_sim(x, training=True, nH=4, name='sn_nonlocal'):
     """Builds graph for the self-attention block.
 
     This is one third of the tricks from the SAGAN paper.
@@ -284,8 +279,6 @@ def sn_attention_block_sim(x, training=True, name='sn_nonlocal'):
         downsampled_num = location_num // 4
         hidden_size = num_channels // 8
 
-        # number of heads
-        nH = 8
         # size_per_head
         head_size = hidden_size // nH
         # acquire masks
@@ -343,7 +336,7 @@ def sn_attention_block_sim(x, training=True, name='sn_nonlocal'):
 
 
 def sn_non_local_block_sim(x, training=True, name='sn_nonlocal',
-                           nH=None):
+                           nH=1):
     """Builds graph for the self-attention block.
 
     This is one third of the tricks from the SAGAN paper.
