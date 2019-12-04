@@ -1,6 +1,6 @@
 import masks as sparse
 import tensorflow as tf
-from ops import sn_conv1x1
+from ops import sn_conv1x1, snlinear
 import numpy as np
 
 
@@ -81,36 +81,31 @@ def sn_attention_1d(x, training=True, nH=4, name='sn_attn1d'):
     """
     with tf.compat.v1.variable_scope(name):
         _, N, num_channels = x.shape.as_list()
-        head_size = (N // 8) // nH
+        head_size = num_channels // nH
 
-        query = tf.compat.v1.layers.Dense(x, num_channels // 8, training, 'query_nn')
+        query = snlinear(x, num_channels, training=training, name='query_nn')
         query = tf.reshape(query, [-1, N, nH, head_size])
         query = tf.transpose(query, [0, 2, 1, 3])
 
-        key = tf.compat.v1.layers.Dense(x, num_channels // 8, training, 'key_nn')
-        key = tf.compat.v1.layers.max_pooling2d(inputs=key, pool_size=[2, 2],
-                                                strides=2)
-        key = tf.reshape(key, [-1, N // 4, nH, head_size])
+        key = snlinear(x, num_channels, training=training, name='key_nn')
+        key = tf.reshape(key, [-1, N, nH, head_size])
         key = tf.transpose(key, [0, 2, 1, 3])
 
         # calculate attention map
         attn = tf.matmul(query, key, transpose_b=True)
         attn = tf.nn.softmax(attn)
-
-        v_head_size = (num_channels // 2) // nH
-        value = tf.compat.v1.layers.Dense(x, num_channels // 2, training, 'value_nn')
-        value = tf.compat.v1.layers.max_pooling2d(
-            inputs=value, pool_size=[2, 2], strides=2)
-        value = tf.reshape(value, [-1, N // 4, nH, v_head_size])
+        
+        value = snlinear(x, num_channels, training=training, name='value_nn')
+        value = tf.reshape(value, [-1, N, nH, head_size])
         value = tf.transpose(value, [0, 2, 1, 3])
 
         # calculate attention value
         attn_value = tf.matmul(attn, value)
         attn_value = tf.transpose(attn_value, [0, 2, 3, 1])
-        attn_value = tf.reshape(attn_value, [_, N, num_channels // 2])
+        attn_value = tf.reshape(attn_value, [_, N, num_channels])
 
         # Convolutional transform of attention output
-        attn_value = tf.compat.v1.layers.Dense(attn_value, num_channels, training, 'attn_nn')
+        attn_value = snlinear(attn_value, num_channels, training=training, name='attn_nn')
 
         # Learnable residual
         sigma = tf.compat.v1.get_variable(
@@ -145,7 +140,7 @@ def topological_attention(x, training=True, nH=4, name='sn_topological',
         attn_blocks = tf.reshape(attn_blocks, [_, 64, -1])
         img = sn_attention_1d(attn_blocks, training=training, nH=nH,
                               name="extrinsic_attn")
-        img = tf.reshape(_, h, w, num_channels)
+        img = tf.reshape(img, (_, h, w, num_channels))
         return img
 
 
