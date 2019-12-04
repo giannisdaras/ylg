@@ -132,10 +132,13 @@ def topological_attention(x, training=True, nH=4, name='sn_topological',
         _, h, w, num_channels = x.shape.as_list()
         # split to "grid" blocks
         x_blocks = tf.compat.v1.image.extract_image_patches(x, [1, 8, 8, 1], [1, 8, 8, 1], [1, 1, 1, 1], padding='VALID')
-        x_blocks = tf.reshape(x_blocks, [_ * 64, 8, 8, 8, 8])
+        # TODO: fix for arbitrary dimensions
+        x_blocks = tf.reshape(x_blocks, [_, 8, 8, 64, num_channels])
+        x_blocks = tf.transpose(x_blocks, [0, 3, 1, 2, 4])
+        x_blocks = tf.reshape(x_blocks, [_ * 64, 8, 8, num_channels])
 
         # "intrinsic" attention
-        attn_blocks = sn_attention_block_sim(x_blocks, training=training, nH=nH,
+        attn_blocks = sn_non_local_block_sim(x_blocks, training=training, nH=nH,
                                              name="intrinsic_attn")
 
         # "extrinsic" attention
