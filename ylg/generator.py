@@ -11,8 +11,8 @@ import tensorflow_gan as tfgan
 import ops
 import attention
 
-flags.DEFINE_boolean('ylg', True,
-                     'Whether to use Your Local Gan variation')
+flags.DEFINE_boolean('type', 'ylg', ['dense', 'ylg', 'topological'],
+                     'Type of model attention')
 flags.DEFINE_integer('nH', 4, 'Number of attention heads to use with SAGAN')
 
 
@@ -145,12 +145,15 @@ def generator(zs, target_class, gf_dim, num_classes, training=True):
             num_classes,
             'g_block4',
             training)
-        if not flags.FLAGS.ylg:
+        if flags.FLAGS.type == 'dense':
             act5 = attention.sn_non_local_block_sim(act4, training, name='g_ops',
                                               nH=flags.FLAGS.nH)
-        else:
+        elif flags.FLAGS.type == 'ylg':
             act5 = attention.sn_attention_block_sim(act4, training, name='g_ops',
                                                     nH=flags.FLAGS.nH)
+        else:
+            act5 = attention.topological_attention(act4, training, name='g_ops',
+                                                   nH=flags.FLAGS.nH)
         act6 = block(
             act5,
             target_class,
