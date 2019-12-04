@@ -9,6 +9,7 @@ from absl import flags
 import tensorflow as tf
 import tensorflow_gan as tfgan
 import ops
+import attention
 
 flags.DEFINE_boolean('ylg', True,
                      'Whether to use Your Local Gan variation')
@@ -145,11 +146,11 @@ def generator(zs, target_class, gf_dim, num_classes, training=True):
             'g_block4',
             training)
         if not flags.FLAGS.ylg:
-            act5 = ops.sn_non_local_block_sim(act4, training, name='g_ops',
+            act5 = attention.sn_non_local_block_sim(act4, training, name='g_ops',
                                               nH=flags.FLAGS.nH)
         else:
-            act5 = ops.sn_attention_block_sim(act4, training, name='g_ops',
-                                              nH=flags.FLAGS.nH)
+            act5 = attention.sn_attention_block_sim(act4, training, name='g_ops',
+                                                    nH=flags.FLAGS.nH)
         act6 = block(
             act5,
             target_class,
