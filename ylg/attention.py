@@ -67,7 +67,7 @@ def sn_attention_block_sim(x, training=True, nH=4, name='sn_nonlocal'):
         # Learnable residual
         sigma = tf.compat.v1.get_variable(
             'sigma_ratio', [], initializer=tf.compat.v1.initializers.constant(0.0))
-        return x + sigma * attn_g
+        return x + sigma * value
 
 
 def sn_non_local_block_sim(x, training=True, name='sn_nonlocal',
@@ -112,4 +112,4 @@ def sn_non_local_block_sim(x, training=True, name='sn_nonlocal',
         # Learnable residual
         sigma = tf.compat.v1.get_variable(
             'sigma_ratio', [], initializer=tf.compat.v1.initializers.constant(0.0))
-        return x + sigma * attn_g
+        return x + sigma * attn_value
