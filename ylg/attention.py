@@ -81,22 +81,23 @@ def sn_attention_1d(x, training=True, nH=4, name='sn_attn1d'):
     """
     with tf.compat.v1.variable_scope(name):
         _, N, num_channels = x.shape.as_list()
-        head_size = num_channels // nH
+        head_size = (num_channels // 8) // nH
+        v_head_size = (num_channels // 2) // nH
 
-        query = snlinear(x, num_channels, training=training, name='query_nn')
+        query = snlinear(x, num_channels // 8, training=training, name='query_nn')
         query = tf.reshape(query, [-1, N, nH, head_size])
         query = tf.transpose(query, [0, 2, 1, 3])
 
-        key = snlinear(x, num_channels, training=training, name='key_nn')
+        key = snlinear(x, num_channels // 8, training=training, name='key_nn')
         key = tf.reshape(key, [-1, N, nH, head_size])
         key = tf.transpose(key, [0, 2, 1, 3])
 
         # calculate attention map
         attn = tf.matmul(query, key, transpose_b=True)
         attn = tf.nn.softmax(attn)
-        
-        value = snlinear(x, num_channels, training=training, name='value_nn')
-        value = tf.reshape(value, [-1, N, nH, head_size])
+
+        value = snlinear(x, num_channels // 2, training=training, name='value_nn')
+        value = tf.reshape(value, [-1, N, nH, v_head_size])
         value = tf.transpose(value, [0, 2, 1, 3])
 
         # calculate attention value
@@ -125,19 +126,24 @@ def topological_attention(x, training=True, nH=4, name='sn_topological',
 
     with tf.compat.v1.variable_scope(name):
         _, h, w, num_channels = x.shape.as_list()
+
         # split to "grid" blocks
-        x_blocks = tf.compat.v1.image.extract_image_patches(x, [1, 8, 8, 1], [1, 8, 8, 1], [1, 1, 1, 1], padding='VALID')
-        # TODO: fix for arbitrary dimensions
-        x_blocks = tf.reshape(x_blocks, [_, 8, 8, 64, num_channels])
-        x_blocks = tf.transpose(x_blocks, [0, 3, 1, 2, 4])
-        x_blocks = tf.reshape(x_blocks, [_ * 64, 8, 8, num_channels])
+
+        # TODO: fix this code to work on TPUs
+        # x_blocks = tf.compat.v1.image.extract_image_patches(x, [1, 8, 8, 1], [1, 8, 8, 1], [1, 1, 1, 1], padding='VALID')
+        # # TODO: fix for arbitrary dimensions
+        # x_blocks = tf.reshape(x_blocks, [_, 8, 8, 64, num_channels])
+        # x_blocks = tf.transpose(x_blocks, [0, 3, 1, 2, 4])
+        # x_blocks = tf.reshape(x_blocks, [_ * 64, 8, 8, num_channels])
+        x_blocks = tf.reshape(x, [-1, in_dim, in_dim, num_channels])
+
 
         # "intrinsic" attention
         attn_blocks = sn_non_local_block_sim(x_blocks, training=training, nH=nH,
                                              name="intrinsic_attn")
 
         # "extrinsic" attention
-        attn_blocks = tf.reshape(attn_blocks, [_, 64, -1])
+        attn_blocks = tf.reshape(attn_blocks, [_, (h // in_dim) * (w // in_dim), -1])
         img = sn_attention_1d(attn_blocks, training=training, nH=nH,
                               name="extrinsic_attn")
         img = tf.reshape(img, (_, h, w, num_channels))
