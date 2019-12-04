@@ -1,6 +1,7 @@
 import masks as sparse
 import tensorflow as tf
 from ops import sn_conv1x1
+import numpy as np
 
 
 def get_grid_masks(gridO, gridI, nH=8, filling_curve='manhattan'):
