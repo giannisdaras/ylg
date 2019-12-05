@@ -103,7 +103,7 @@ def sn_attention_1d(x, training=True, nH=4, name='sn_attn1d'):
         # calculate attention value
         attn_value = tf.matmul(attn, value)
         attn_value = tf.transpose(attn_value, [0, 2, 3, 1])
-        attn_value = tf.reshape(attn_value, [_, N, num_channels])
+        attn_value = tf.reshape(attn_value, [_, N, num_channels // 2])
 
         # Convolutional transform of attention output
         attn_value = snlinear(attn_value, num_channels, training=training, name='attn_nn')
