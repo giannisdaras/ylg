@@ -9,8 +9,8 @@ import os
 from categories import indx2category
 from scipy.stats import truncnorm
 
-
-flags.DEFINE_string('category', 'eskimo_husky', 'Category of generated images.'
+# Random states: 4, 99, 3, 900, 412, 109
+flags.DEFINE_string('category', 'maltese', 'Category of generated images.'
                     'See file: categories.py for all available categories.')
 flags.DEFINE_integer('seed', 10, 'Seed for numpy.')
 flags.DEFINE_string('pretrained_path',
@@ -31,7 +31,6 @@ def interpolate_points(p1, p2, n_steps=20):
 
 def save_img_cv2(img, name):
     img_color = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    cv2.imshow('_', img_color)
     cv2.imwrite(name, img_color)
 
 

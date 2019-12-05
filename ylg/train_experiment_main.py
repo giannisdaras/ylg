@@ -36,7 +36,7 @@ flags.DEFINE_float('generator_lr', 0.00005, 'The generator learning rate.')
 flags.DEFINE_float('discriminator_lr', 0.0002,
                    'The discriminator learning rate.')
 flags.DEFINE_float('beta1', 0.0, 'Momentum term of adam. [0.0]')
-flags.DEFINE_integer('num_classes', 2, 'Number of classes of the dataset.')
+flags.DEFINE_integer('num_classes', 1000, 'Number of classes of the dataset.')
 
 
 # ML Infra.

@@ -74,17 +74,7 @@ Just run: `python inverse_image.py` to invert a cute maltese dog that is saved i
 
 
 ### Train from scratch
-```
-python3 self_attention_estimator/train_experiment_main.py \
-  --mode=train_and_eval \
-  --max_number_of_steps=999999 \
-  --tpu=$TPU_NAME \
-  --gcp_project=$PROJECT_ID \
-  --tpu_zone=$TPU_ZONE \
-  --model_dir=$STORAGE_BUCKET/logdir \
-  --imagenet_data_dir=$STORAGE_BUCKET/data \
-  --alsologtostderr
-```
+We totally understand that you might want to train your own model for a variety of reasons: experimentation with new modules, different datasets, etc. For that reason, we have created the branch `train`, which slighly changes the API of Generator and Discriminator for the training. You can checkout in this branch and then use the `train_experiment_main.py` script for training YLG from scratch. Please refer to the [instructions](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/examples/self_attention_estimator) of the tensorflow-gan library for setting up your training environment (host VM, TPUs/GPUs, bucket, etc) and feel free to open us an issue if you encounter any problem, so we can look on it.
 
 ### Branch modifications
 - [x] Batch size
