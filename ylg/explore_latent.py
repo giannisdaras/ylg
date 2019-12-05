@@ -9,8 +9,8 @@ import os
 from categories import indx2category
 from scipy.stats import truncnorm
 
-
-flags.DEFINE_string('category', 'eskimo_husky', 'Category of generated images.'
+# Random states: 4, 99, 3, 900, 412, 109
+flags.DEFINE_string('category', 'maltese', 'Category of generated images.'
                     'See file: categories.py for all available categories.')
 flags.DEFINE_integer('seed', 10, 'Seed for numpy.')
 flags.DEFINE_string('pretrained_path',
