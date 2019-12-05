@@ -2,9 +2,8 @@ import numpy as np
 import random
 import math
 import tensorflow as tf
-from collections import defaultdict
 from itertools import cycle
-
+from space_filling_curves import Manhattan, Hilbert
 
 def allow_non_square(fn):
     '''
@@ -70,7 +69,6 @@ def compute_stride(fn):
 
 
 class SparseMask:
-
     def convert_to_1d(i, j, cols):
         return i * cols + j
 
@@ -112,33 +110,16 @@ class SparseMask:
                 indices.pop(index)
         return indices
 
-    def enumerate_cells(rows, cols):
-        # maps distances to cells
-        distances = defaultdict(list)
-
-        # maps numbers to cells
-        enumeration = {}
-
-        for i in range(rows):
-            for j in range(cols):
-                distance = i + j
-                distances[distance].append([i, j])
-
-        sorted_distances = sorted(list(distances.keys()))
-
-        numbers = list(range(rows * cols))
-        for distance in sorted_distances:
-            cells = distances[distance]
-            for cell in cells:
-                enumeration[numbers.pop(0)] = cell
-        return enumeration
-
     @classmethod
     @disallow_non_square
     @numpy
-    def get_square_grid_indices_from_1d(self, grid):
+    def get_square_grid_indices_from_1d(self, grid, filling_curve='manhattan'):
+        if filling_curve == 'manhattan':
+            curve = Manhattan()
+        else:
+            curve = Hilbert()
         rows, cols = grid
-        enumeration = self.enumerate_cells(rows, cols)
+        enumeration = curve.enumerate_cells(rows, cols)
         mask_indices = self.get_indices(grid[0] * grid[1])
         indices = []
         for sO, sI in mask_indices:
@@ -153,19 +134,19 @@ class SparseMask:
     @classmethod
     @allow_non_square
     @numpy
-    def get_grid_indices_from_1d(self, gridI, gridO):
+    def get_grid_indices_from_1d(self, gridI, gridO, filling_curve='manhattan'):
         rowsI, colsI = gridI
         rowsO, colsO = gridO
 
         if rowsI == rowsO and colsI == colsO:
-            return self.get_square_grid_indices_from_1d(gridI)
+            return self.get_square_grid_indices_from_1d(gridI, filling_curve=filling_curve)
 
         blocks_ratio = (rowsO * colsO) // (rowsI * colsI)
         offset = (rowsI * colsI)
-        indices = self.get_square_grid_indices_from_1d(gridI)
+        indices = self.get_square_grid_indices_from_1d(gridI, filling_curve=filling_curve)
         offset_array = np.zeros(indices.shape)
         for i in range(1, blocks_ratio):
-            new_indices = self.get_square_grid_indices_from_1d(gridI)
+            new_indices = self.get_square_grid_indices_from_1d(gridI, filling_curve=filling_curve)
             offset_array[:, 0] += offset
             new_indices = offset_array + new_indices
             indices = np.concatenate([indices, new_indices])
