@@ -36,7 +36,7 @@ flags.DEFINE_float('generator_lr', 0.0001, 'The generator learning rate.')
 flags.DEFINE_float('discriminator_lr', 0.0004,
                    'The discriminator learning rate.')
 flags.DEFINE_float('beta1', 0.0, 'Momentum term of adam. [0.0]')
-flags.DEFINE_integer('num_classes', 2, 'Number of classes of the dataset.')
+flags.DEFINE_integer('num_classes', 1000, 'Number of classes of the dataset.')
 
 
 # ML Infra.
@@ -52,14 +52,14 @@ flags.DEFINE_integer(
     'train_steps_per_eval', 1000,
     'Number of train steps before writing some sample images.')
 flags.DEFINE_integer('num_eval_steps', 32, 'The number of evaluation steps.')
-flags.DEFINE_integer('eval_batch_size', 32,
+flags.DEFINE_integer('eval_batch_size', 1024,
                      'The number of images in each eval batch.')
 flags.DEFINE_integer('predict_batch_size', 80,
                      'The number of images in each predict batch.')
 
 # Debugging.
-flags.DEFINE_bool('use_tpu', False, 'Whether to use TPU or CPU.')
-flags.DEFINE_bool('eval_on_tpu', False, 'Whether eval is run on TPU.')
+flags.DEFINE_bool('use_tpu', True, 'Whether to use TPU or CPU.')
+flags.DEFINE_bool('eval_on_tpu', True, 'Whether eval is run on TPU.')
 flags.DEFINE_integer(
     'continuous_eval_timeout_secs', None,
     'None, or number of seconds to wait for a checkpoint '
@@ -67,7 +67,7 @@ flags.DEFINE_integer(
 
 # TPU params.
 flags.DEFINE_bool(
-    'use_tpu_estimator', False,
+    'use_tpu_estimator', True,
     'Whether to use TPUGANEstimator or GANEstimator. This is useful if, for '
     'instance, we want to run the eval job on GPU.')
 flags.DEFINE_string('tpu', None, 'A string corresponding to the TPU to use.')

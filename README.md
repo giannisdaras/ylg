@@ -74,7 +74,7 @@ Just run: `python inverse_image.py` to invert a cute maltese dog that is saved i
 
 
 ### Train from scratch
-You can use the `train_experiment_main.py` script for training YLG from scratch. Please refer to the [instructions](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/examples/self_attention_estimator) of the tensorflow-gan library for setting up your training environment (host VM, TPUs/GPUs, bucket, etc) and feel free to open us an issue if you encounter any problem, so we can look on it.
+We totally understand that you might want to train your own model for a variety of reasons: experimentation with new modules, different datasets, etc. For that reason, we have created the branch `train`, which slighly changes the API of Generator and Discriminator for the training. You can checkout in this branch and then use the `train_experiment_main.py` script for training YLG from scratch. Please refer to the [instructions](https://github.com/tensorflow/gan/tree/master/tensorflow_gan/examples/self_attention_estimator) of the tensorflow-gan library for setting up your training environment (host VM, TPUs/GPUs, bucket, etc) and feel free to open us an issue if you encounter any problem, so we can look on it.
 
 ### Exra experiments
 
