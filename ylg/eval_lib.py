@@ -35,7 +35,11 @@ def get_activations(get_images_fn, num_batches, get_logits=False):
     Returns:
       1 or 2 Tensors of Inception activations.
     """
-    outputs = tfgan.eval.sample_and_run_inception(sample_fn=lambda _: get_images_fn(), sample_inputs=[1.0] * num_batches)
+    inception_img_sz = tfgan.eval.INCEPTION_DEFAULT_IMAGE_SIZE
+    outputs = tfgan.eval.sample_and_run_inception(sample_fn=lambda _: tf.compat.v1.image.resize(get_images_fn(), 
+                                                                                                [inception_img_sz, inception_img_sz], 
+                                                                                                method=tf.image.ResizeMethod.BILINEAR), 
+                                                 sample_inputs=[1.0] * num_batches)
     if get_logits:
         return outputs['logits'], outputs['pool_3']
     else:
