@@ -31,7 +31,6 @@ def interpolate_points(p1, p2, n_steps=20):
 
 def save_img_cv2(img, name):
     img_color = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    cv2.imshow('_', img_color)
     cv2.imwrite(name, img_color)
 
 
