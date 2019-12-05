@@ -23,7 +23,7 @@ from tensorflow_gan.examples import compat_utils
 
 IMG_SIZE = 128
 
-flags.DEFINE_string('dataset_name', 'horses_or_humans',
+flags.DEFINE_string('dataset_name', 'imagenet2012',
                     'Name of the dataset to train on')
 flags.DEFINE_string('data_dir', None,
                     'Directory of dataset. If `None`, use default.')
