@@ -73,7 +73,6 @@ def get_tpu_estimator(generator, discriminator, hparams, config):
         predict_batch_size=hparams.predict_batch_size,
         use_tpu=hparams.debug_params.use_tpu,
         config=config,
-        gan_train_steps=tfgan_tuples.GANTrainSteps(2, 1),
         params=hparams._asdict())
 
 

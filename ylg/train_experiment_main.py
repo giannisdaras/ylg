@@ -22,7 +22,7 @@ flags.DEFINE_string('model_dir', '/tmp/tfgan_logdir/sagan-estimator',
 
 # ML Hparams.
 flags.DEFINE_integer(
-    'train_batch_size', 8192,
+    'train_batch_size', 1024,
     'The number of images in each train batch. From go/tpu-pitfalls: "The '
     'batch size of any model should always be at least 64 (8 per TPU core), '
     'since the TPU always pads the tensors to this size. The ideal batch size '
@@ -30,10 +30,10 @@ flags.DEFINE_integer(
     'eliminates inefficiencies related to memory transfer and padding."')
 flags.DEFINE_integer('z_dim', 128,
                      'Dimensions of the generator noise vector.')
-flags.DEFINE_integer('gf_dim', 96, 'Dimensionality of gf. [64]')
-flags.DEFINE_integer('df_dim', 96, 'Dimensionality of df. [64]')
-flags.DEFINE_float('generator_lr', 0.00005, 'The generator learning rate.')
-flags.DEFINE_float('discriminator_lr', 0.0002,
+flags.DEFINE_integer('gf_dim', 64, 'Dimensionality of gf. [64]')
+flags.DEFINE_integer('df_dim', 64, 'Dimensionality of df. [64]')
+flags.DEFINE_float('generator_lr', 0.0001, 'The generator learning rate.')
+flags.DEFINE_float('discriminator_lr', 0.0004,
                    'The discriminator learning rate.')
 flags.DEFINE_float('beta1', 0.0, 'Momentum term of adam. [0.0]')
 flags.DEFINE_integer('num_classes', 1000, 'Number of classes of the dataset.')
