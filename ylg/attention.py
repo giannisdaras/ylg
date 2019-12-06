@@ -193,3 +193,57 @@ def sn_non_local_block_sim(x, training=True, name='sn_nonlocal',
         sigma = tf.compat.v1.get_variable(
             'sigma_ratio', [], initializer=tf.compat.v1.initializers.constant(0.0))
         return x + sigma * attn_value
+
+
+
+def random_projection_attention(x, training=True, name='sn_randomproj',
+                                nH=1):
+    """
+        Attention block **with** downsampling + learnable residual
+        connection.
+    """
+    with tf.compat.v1.variable_scope(name):
+        _, h, w, num_channels = x.shape.as_list()
+        head_size = (num_channels // 8) // nH
+
+        query = sn_conv1x1(x, num_channels // 8, training, 'sn_conv_theta')
+        query = tf.reshape(query, [-1, h * w, nH, head_size])
+        query = tf.transpose(query, [0, 2, 1, 3])
+
+        key = sn_conv1x1(x, num_channels // 8, training, 'sn_conv_phi')
+        key = tf.compat.v1.layers.max_pooling2d(inputs=key, pool_size=[2, 2],
+                                                strides=2)
+        key = tf.reshape(key, [-1, h * w // 4, nH, head_size])
+        key = tf.transpose(key, [0, 2, 1, 3]) # nB, nH, h * w // 4, head_size
+
+        proj_shape = (h * w // 4, 8)
+        projector = np.sqrt(3) * np.random.choice([-1, 0, 1], proj_shape, [1/6, 2/3, 1/6])
+
+        projected_key = tf.matmul(key, projector, transpose_a=True)
+        attn = tf.matmul(query, projected_key)
+
+        attn = tf.nn.softmax(attn)
+
+        v_head_size = (num_channels // 2) // nH
+        value = sn_conv1x1(x, num_channels // 2, training, 'sn_conv_g')
+        value = tf.compat.v1.layers.max_pooling2d(
+            inputs=value, pool_size=[2, 2], strides=2)
+        value = tf.reshape(value, [-1, h * w // 4, nH, v_head_size])
+        value = tf.transpose(value, [0, 2, 1, 3]) # nB, nH, h * w // 4, head_size
+
+        # nB, nH, head_size, 8
+        projected_value = tf.matmul(value, projector, transpose_a=True)
+        projected_value = tf.transpose(0, 1, 3, 2) # nB, nH, 8, head_size
+
+        # calculate attention value
+        attn_value = tf.matmul(attn, projected_value)
+        attn_value = tf.transpose(attn_value, [0, 2, 3, 1])
+        attn_value = tf.reshape(attn_value, [-1, h, w, num_channels // 2])
+
+        # Convolutional transform of attention output
+        attn_value = sn_conv1x1(attn_value, num_channels, training, 'sn_conv_attn')
+
+        # Learnable residual
+        sigma = tf.compat.v1.get_variable(
+            'sigma_ratio', [], initializer=tf.compat.v1.initializers.constant(0.0))
+        return x + sigma * attn_value

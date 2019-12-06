@@ -11,7 +11,7 @@ import tensorflow_gan as tfgan
 import ops
 import attention
 
-flags.DEFINE_enum('type', 'ylg', ['dense', 'ylg', 'topological'],
+flags.DEFINE_enum('type', 'ylg', ['dense', 'ylg', 'topological', 'randomproj'],
                     'Type of model attention')
 flags.DEFINE_integer('nH', 4, 'Number of attention heads to use with SAGAN')
 
@@ -151,9 +151,13 @@ def generator(zs, target_class, gf_dim, num_classes, training=True):
         elif flags.FLAGS.type == 'ylg':
             act5 = attention.sn_attention_block_sim(act4, training, name='g_ops',
                                                     nH=flags.FLAGS.nH)
-        else:
+        elif flags.FLAGS.type == 'topological':
             act5 = attention.topological_attention(act4, training, name='g_ops',
                                                    nH=flags.FLAGS.nH)
+        else:
+            act5 = attention.random_projection_attention(act4, training,
+                                                         name='g_ops',
+                                                         nH=flags.FLAGS.nH)
         act6 = block(
             act5,
             target_class,
