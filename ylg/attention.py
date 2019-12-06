@@ -218,6 +218,8 @@ def random_projection_attention(x, training=True, name='sn_randomproj',
 
         proj_shape = (h * w // 4, 8)
         projector = np.sqrt(3) * np.random.choice([-1, 0, 1], proj_shape, [1/6, 2/3, 1/6])
+        projector = projector.astype(np.float32)
+
 
         projected_key = tf.matmul(key, projector, transpose_a=True)
         attn = tf.matmul(query, projected_key)
@@ -233,7 +235,7 @@ def random_projection_attention(x, training=True, name='sn_randomproj',
 
         # nB, nH, head_size, 8
         projected_value = tf.matmul(value, projector, transpose_a=True)
-        projected_value = tf.transpose(0, 1, 3, 2) # nB, nH, 8, head_size
+        projected_value = tf.transpose(projected_value, (0, 1, 3, 2)) # nB, nH, 8, head_size
 
         # calculate attention value
         attn_value = tf.matmul(attn, projected_value)
