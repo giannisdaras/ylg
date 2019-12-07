@@ -2,7 +2,9 @@ import masks as sparse
 import tensorflow as tf
 from ops import sn_conv1x1, snlinear
 import numpy as np
+from absl import flags
 
+flags.DEFINE_integer('dim', 64, 'Random projection dimension')
 
 def get_grid_masks(gridO, gridI, nH=8, filling_curve='manhattan'):
     rtl = [
@@ -211,12 +213,10 @@ def random_projection_attention(x, training=True, name='sn_randomproj',
         query = tf.transpose(query, [0, 2, 1, 3])
 
         key = sn_conv1x1(x, num_channels // 8, training, 'sn_conv_phi')
-        key = tf.compat.v1.layers.max_pooling2d(inputs=key, pool_size=[2, 2],
-                                                strides=2)
-        key = tf.reshape(key, [-1, h * w // 4, nH, head_size])
-        key = tf.transpose(key, [0, 2, 1, 3]) # nB, nH, h * w // 4, head_size
+        key = tf.reshape(key, [-1, h * w, nH, head_size])
+        key = tf.transpose(key, [0, 2, 1, 3]) # nB, nH, h * w, head_size
 
-        proj_shape = (h * w // 4, 8)
+        proj_shape = (h * w, flags.FLAGS.dim)
         projector = np.sqrt(3) * np.random.choice([-1, 0, 1], proj_shape, [1/6, 2/3, 1/6])
         projector = projector.astype(np.float32)
 
@@ -228,10 +228,8 @@ def random_projection_attention(x, training=True, name='sn_randomproj',
 
         v_head_size = (num_channels // 2) // nH
         value = sn_conv1x1(x, num_channels // 2, training, 'sn_conv_g')
-        value = tf.compat.v1.layers.max_pooling2d(
-            inputs=value, pool_size=[2, 2], strides=2)
-        value = tf.reshape(value, [-1, h * w // 4, nH, v_head_size])
-        value = tf.transpose(value, [0, 2, 1, 3]) # nB, nH, h * w // 4, head_size
+        value = tf.reshape(value, [-1, h * w, nH, v_head_size])
+        value = tf.transpose(value, [0, 2, 1, 3]) # nB, nH, h * w, v_head_size
 
         # nB, nH, head_size, 8
         projected_value = tf.matmul(value, projector, transpose_a=True)
