@@ -105,6 +105,8 @@ def discriminator(image, labels, df_dim, number_classes, act=tf.nn.relu):
             h1 = attention.sn_attention_block_sim(h0, name='d_ops', nH=flags.FLAGS.nH)
         elif flags.FLAGS.type == 'topological':
             h1 = attention.topological_attention(h0, name='d_ops', nH=flags.FLAGS.nH)
+        elif flags.FLAGS.type == 'softmax':
+            h1 = attention.sn_attention_softmax(h0, name='d_ops', nH=flags.FLAGS.nH)
         else:
             h1 = attention.random_projection_attention(h0, name='d_ops', nH=flags.FLAGS.nH)
 
